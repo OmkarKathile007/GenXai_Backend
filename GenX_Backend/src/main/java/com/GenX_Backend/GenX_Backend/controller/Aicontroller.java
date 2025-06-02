@@ -42,12 +42,13 @@ public class Aicontroller {
 
     @PostMapping("/convert")
     public String convert(@RequestBody Map<String, String> payload) {
-        String text = payload.get("text");
-        if (text == null || text.trim().isEmpty()) {
+        String inputLanguage = payload.get("inputLanguage");
+        String outputLanguage=payload.get("outputLanguage");
+        if (inputLanguage == null || inputLanguage.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'text' is required");
         }
         try {
-            return aiService.getConvertedResponse(text);
+            return aiService.getConvertedResponse(inputLanguage,outputLanguage);
         } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,

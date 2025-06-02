@@ -27,11 +27,11 @@ public class AIService {
 
     public String getSummarizedResponse(String userInput) {
 
-
+           StringBuilder res=new StringBuilder("Summarize the following text while maintaining technical accuracy:"+userInput);
             Map<String, Object> requestBody = Map.of(
                 "contents", new Object[] {
                        Map.of("parts", new Object[] {
-                               Map.of("text", userInput)
+                               Map.of("text", res.toString())
                        } )
                }
                );
@@ -50,11 +50,13 @@ public class AIService {
     }
 
 
-    public String getConvertedResponse(String text) {
+    public String getConvertedResponse(String inputCode,String outputCode) {
+
+        StringBuilder res=new StringBuilder("Convert the following "+inputCode+" code to "+outputCode);
         Map<String, Object> requestBody = Map.of(
                 "contents", new Object[] {
                         Map.of("parts", new Object[] {
-                                Map.of("text", text)
+                                Map.of("text", res.toString())
                         } )
                 }
         );
