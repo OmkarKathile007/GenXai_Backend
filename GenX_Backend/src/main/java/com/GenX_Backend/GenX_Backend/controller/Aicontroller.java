@@ -6,18 +6,23 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import com.GenX_Backend.GenX_Backend.service.AIService;
 
 import java.util.Map;
 
+@Controller
 @CrossOrigin
 @RestController
 @RequestMapping("/api/ai")
 @AllArgsConstructor
 public class Aicontroller {
 
+    @Autowired
     private final AIService aiService;
+    public Aicontroller(AIService aiService) { this.aiService = aiService; }
 
     @PostMapping("/summarize")
     public String summarize(@RequestBody Map<String, String> payload) {
@@ -53,12 +58,15 @@ public class Aicontroller {
 
     @PostMapping("/letter")
     public String letter(@RequestBody Map<String, String> payload) {
-        String text = payload.get("text");
-        if (text == null || text.trim().isEmpty()) {
+        String companyName = payload.get("companyName");
+
+        String jobTitle=payload.get("jobTitle");
+        String jobDescription=payload.get("jobDescription");
+        if (companyName == null || jobDescription==null|| jobTitle==null||companyName.trim().isEmpty()||jobTitle.trim().isEmpty()||jobDescription.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'text' is required");
         }
         try {
-            return aiService.getLetterResponse(text);
+            return aiService.getLetterResponse(companyName,jobTitle,jobDescription);
         } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -69,7 +77,7 @@ public class Aicontroller {
 
     @PostMapping("/roadmap")
     public String roadmap(@RequestBody Map<String, String> payload) {
-        String text = payload.get("text");
+        String text = payload.get("question");
         if (text == null || text.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'text' is required");
         }
@@ -101,12 +109,14 @@ public class Aicontroller {
 
     @PostMapping("/email")
     public String email(@RequestBody Map<String, String> payload) {
-        String text = payload.get("text");
+        String text = payload.get("subject");
+        String email=payload.get("toEmail");
+        String recipient=payload.get("recipientName");
         if (text == null || text.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'text' is required");
         }
         try {
-            return aiService.getEmailResponse(text);
+            return aiService.getEmailResponse(text,email,recipient);
         } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
